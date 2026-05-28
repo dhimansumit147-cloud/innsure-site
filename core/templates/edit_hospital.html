@@ -1,0 +1,101 @@
+{% extends 'sidebar.html' %}
+
+{% block title %}Edit Hospital{% endblock %}
+
+{% block content %}
+
+<style>
+.form-container {
+    max-width: 600px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* INPUTS */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #374151;
+    font-weight: 500;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+    background: #f9fafb;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #10b981;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg,#10b981,#059669);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16,185,129,0.3);
+}
+</style>
+
+<div class="form-container">
+
+    <h2>Edit Hospital</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Category</label>
+            <select name="category" required>
+                <option value="General" {% if hospital.category == "General" %}selected{% endif %}>General</option>
+                <option value="Specialty" {% if hospital.category == "Specialty" %}selected{% endif %}>Specialty</option>
+                <option value="Emergency" {% if hospital.category == "Emergency" %}selected{% endif %}>Emergency</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Hospital Name</label>
+            <input type="text" name="name" value="{{ hospital.name }}" required>
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <textarea name="address" rows="4" required>{{ hospital.address }}</textarea>
+        </div>
+        <button type="submit">✓ Save Changes</button>
+    </form>
+
+</div>
+
+{% endblock %}

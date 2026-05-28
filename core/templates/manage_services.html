@@ -1,0 +1,289 @@
+{% extends 'sidebar.html' %}
+
+{% block title %}Manage Services{% endblock %}
+
+{% block content %}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .page-header h2 {
+        font-size: 26px;
+        font-weight: 700;
+        color: #111827;
+    }
+    
+    /* BUTTON */
+    .btn {
+        background: linear-gradient(135deg,#3b82f6,#2563eb);
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        display: inline-block;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59,130,246,0.3);
+    }
+    
+    .reset-btn {
+        background: linear-gradient(135deg,#ef4444,#dc2626);
+    }
+    
+    /* FILTER */
+    .filter-box {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .filter-box select {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        min-width: 220px;
+        outline: none;
+        flex: 1;
+    }
+    
+    /* TABLE CARD */
+    .table-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+        overflow-x: auto;   /* IMPORTANT for mobile */
+    }
+    
+    /* TABLE */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px; /* forces scroll on small screens */
+    }
+    
+    thead {
+        background: #f9fafb;
+    }
+    
+    th, td {
+        padding: 14px;
+        text-align: left;
+        font-size: 14px;
+        color: #374151;
+        vertical-align: top;
+    }
+    
+    tr {
+        border-bottom: 1px solid #eee;
+    }
+    
+    tr:hover {
+        background: #f3f4f6;
+    }
+    
+    /* ACTION BUTTONS */
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #fff;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .edit-btn {
+        background: linear-gradient(135deg,#10b981,#059669);
+    }
+    
+    .delete-btn {
+        background: linear-gradient(135deg,#ef4444,#dc2626);
+    }
+    
+    .heading-badge {
+        font-weight: 700;
+        color: #111827;
+        font-size: 15px;
+    }
+    
+    /* =========================
+       📱 MOBILE RESPONSIVE
+    ========================= */
+    @media (max-width: 768px) {
+    
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    
+        .page-header h2 {
+            font-size: 22px;
+        }
+    
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+    
+        .filter-box {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    
+        .filter-box select,
+        .filter-box button,
+        .filter-box a {
+            width: 100%;
+        }
+    
+        .table-card {
+            padding: 12px;
+        }
+    
+        th, td {
+            font-size: 13px;
+            padding: 10px;
+        }
+    
+        .action-buttons {
+            flex-direction: column;
+            gap: 6px;
+        }
+    
+        .action-btn {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+    
+    /* VERY SMALL DEVICES */
+    @media (max-width: 480px) {
+    
+        .page-header h2 {
+            font-size: 18px;
+        }
+    
+        th, td {
+            font-size: 12px;
+        }
+    }
+    </style>
+
+<div>
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <h2>Manage Services</h2>
+
+        <a href="{% url 'add_service' %}" class="btn">+ Add Service</a>
+    </div>
+
+    <!-- FILTER -->
+    <form method="GET" class="filter-box">
+
+        <select name="heading">
+            <option value="">-- Filter By Heading --</option>
+
+            {% for item in headings %}
+                <option value="{{ item.heading }}"
+                    {% if selected_heading == item.heading %}selected{% endif %}>
+                    {{ item.heading }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn">Filter</button>
+
+        <a href="{% url 'manage_services' %}" class="btn reset-btn">
+            Reset
+        </a>
+
+    </form>
+
+    <!-- TABLE -->
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Heading</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for service in services %}
+                <tr>
+
+                    <td class="heading-badge">{{ service.heading }}</td>
+
+                    <td><strong>{{ service.name }}</strong></td>
+
+                    <td>{{ service.description }}</td>
+
+                    <td>
+                        <div class="action-buttons">
+
+                            <a class="action-btn edit-btn"
+                               href="{% url 'edit_service' service.id %}">
+                                ✏ Edit
+                            </a>
+
+                            <a class="action-btn delete-btn"
+                               href="{% url 'delete_service' service.id %}"
+                               onclick="return confirm('Are you sure?')">
+                                🗑 Delete
+                            </a>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align:center; padding:20px;">
+                        No services found
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

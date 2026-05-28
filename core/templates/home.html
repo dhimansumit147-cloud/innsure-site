@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ================= HERO / SLIDER ================= -->
+<div class="slider">
+
+    {% for slide in slides %}
+    <div class="slide {% if forloop.first %}active{% endif %}">
+        <img src="{{ slide.image.url }}" alt="{{ slide.title }}">
+        <div class="overlay"></div>
+
+        <div class="caption">
+            <h1>{{ slide.title }}</h1>
+            <p>{{ slide.description }}</p>
+        </div>
+    </div>
+    {% empty %}
+    <div class="slide active">
+        <img src="https://via.placeholder.com/1600x520?text=No+Slides+Added">
+        <div class="overlay"></div>
+
+        <div class="caption">
+            <h1>No Slides Available</h1>
+            <p>Please add slides from admin panel</p>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Controls -->
+    <div class="controls">
+        <span class="prev">&#10094;</span>
+        <span class="next">&#10095;</span>
+    </div>
+</div>
+
+
+<!-- ================= HOME CONTENT ================= -->
+<section class="home-content">
+
+    {% for content in home_contents %}
+
+    <div class="content-card">
+
+        <h2>{{ content.title }}</h2>
+
+        <p>{{ content.description }}</p>
+
+    </div>
+
+    {% empty %}
+
+    <div class="content-card">
+        <h2>No Content Available</h2>
+        <p>Please add content from admin panel</p>
+    </div>
+
+    {% endfor %}
+
+</section>
+
+
+<!-- ================= STYLE ================= -->
+<style>
+
+/* BASE */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: #fff;
+    color: #444;
+}
+
+/* ================= SLIDER ================= */
+.slider {
+    height: 520px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* SLIDE */
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(1.1);
+    filter: blur(10px);
+    transition: all 1.2s ease;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* OVERLAY */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        rgba(255,255,255,0.75),
+        rgba(255,255,255,0.25)
+    );
+}
+
+/* CAPTION */
+.caption {
+    position: absolute;
+    top: 50%;
+    left: 8%;
+    transform: translateY(-50%);
+    max-width: 600px;
+    animation: fadeUp 1s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(-30%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%);
+    }
+}
+
+.caption h1 {
+    font-size: 52px;
+    font-weight: 900;
+    color: #111;
+}
+
+.caption p {
+    font-size: 18px;
+    margin-top: 10px;
+    color: #333;
+}
+
+/* CONTROLS */
+.controls {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    transform: translateY(-50%);
+}
+
+.controls span {
+    font-size: 28px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.9);
+    padding: 14px;
+    border-radius: 50%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+.controls span:hover {
+    background: #111;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* ================= HOME CONTENT ================= */
+.home-content {
+    max-width: 1100px;
+    margin: auto;
+    padding: 70px 20px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* CARD */
+.content-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 30px;
+    border: 1px solid #eee;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+    transition: 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.content-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+/* TOP LINE */
+.content-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, #111, #666, #111);
+}
+
+/* TITLE */
+.content-card h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 12px;
+}
+
+/* TEXT */
+.content-card p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #555;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:768px){
+
+    .slider {
+        height: 300px;
+    }
+
+    .caption h1 {
+        font-size: 26px;
+    }
+
+    .home-content {
+        grid-template-columns: 1fr;
+        padding: 40px 15px;
+    }
+
+}
+
+</style>
+
+
+<!-- ================= SCRIPT ================= -->
+<script>
+
+const slides = document.querySelectorAll('.slide');
+const prevButton = document.querySelector('.prev');
+const nextButton = document.querySelector('.next');
+
+let currentIndex = 0;
+
+function showSlide(index) {
+    slides.forEach(slide => slide.classList.remove('active'));
+    slides[index].classList.add('active');
+}
+
+function nextSlide() {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+}
+
+function prevSlide() {
+    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+    showSlide(currentIndex);
+}
+
+nextButton.addEventListener('click', nextSlide);
+prevButton.addEventListener('click', prevSlide);
+
+setInterval(nextSlide, 6000);
+
+</script>
+
+{% endblock %}

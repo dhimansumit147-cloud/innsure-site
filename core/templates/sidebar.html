@@ -1,0 +1,336 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Innsure{% endblock %}</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            background: #f1f5f9;
+            color: #1f2933;
+        }
+
+        /* ================= SIDEBAR ================= */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
+
+        /* Logo */
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-header img {
+            width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        /* Menu */
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu a,
+        .dropdown-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 14px;
+            border: none;
+            background: transparent;
+            text-decoration: none;
+            color: #374151;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .menu a .left,
+        .dropdown-btn .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Hover */
+        .menu a:hover,
+        .dropdown-btn:hover {
+            background: #f3f4f6;
+            color: #111827;
+            transform: translateX(4px);
+        }
+
+        /* Active Link */
+        .menu a.active {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Dropdown */
+        .dropdown-container {
+            display: none;
+            flex-direction: column;
+            margin-left: 15px;
+            margin-top: 5px;
+            gap: 5px;
+        }
+
+        .dropdown-container a {
+            font-size: 14px;
+            padding: 10px 12px;
+            background: #f8fafc;
+        }
+
+        .dropdown-container a:hover {
+            background: #e5e7eb;
+        }
+
+        .dropdown-btn.active-dropdown {
+            background: #eef2ff;
+            color: #4338ca;
+            font-weight: 600;
+        }
+
+        .rotate {
+            transform: rotate(180deg);
+            transition: 0.3s;
+        }
+
+        /* Logout */
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #ef4444;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 8px;
+            }
+
+            .sidebar-header img {
+                width: 40px;
+            }
+
+            .sidebar-header h2,
+            .menu span,
+            .dropdown-icon {
+                display: none;
+            }
+
+            .dropdown-container {
+                display: none !important;
+            }
+
+            .menu a,
+            .dropdown-btn {
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <div>
+
+            <!-- Logo -->
+            <div class="sidebar-header">
+                <img src="{% static 'img/logo.png' %}" alt="Logo">
+                <h2>Innsure Health</h2>
+            </div>
+
+            <!-- Menu -->
+            <div class="menu">
+
+                <!-- Dashboard -->
+                <a href="{% url 'dashboard' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <div class="left">
+                        <ion-icon name="speedometer-outline"></ion-icon>
+                        <span>Dashboard</span>
+                    </div>
+                </a>
+
+                <!-- Home Dropdown -->
+                <button class="dropdown-btn" onclick="toggleDropdown()">
+                    <div class="left">
+                        <ion-icon name="home-outline"></ion-icon>
+                        <span>Home</span>
+                    </div>
+
+                    <ion-icon id="dropdownArrow" class="dropdown-icon" name="chevron-down-outline"></ion-icon>
+                </button>
+
+                <div class="dropdown-container" id="homeDropdown">
+
+                    <a href="{% url 'manage_slider' %}"
+                        class="{% if request.resolver_match.url_name == 'manage_slider' %}active{% endif %}">
+                        <ion-icon name="images-outline"></ion-icon>
+                        <span>Slider</span>
+                    </a>
+
+                    <a href="{% url 'manage_home_content' %}"
+                        class="{% if request.resolver_match.url_name == 'home_content' %}active{% endif %}">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        <span>Home Content</span>
+                    </a>
+
+                </div>
+
+                <!-- About -->
+                <a href="{% url 'manage_about' %}"
+                    class="{% if request.resolver_match.url_name == 'manage_about' %}active{% endif %}">
+
+                    <div class="left">
+                        <ion-icon name="information-circle-outline"></ion-icon>
+                        <span>About</span>
+                    </div>
+
+                </a>
+
+                <!-- Services -->
+                <a href="{% url 'manage_services' %}"
+                    class="{% if request.resolver_match.url_name == 'manage_services' %}active{% endif %}">
+                    <div class="left">
+                        <ion-icon name="construct-outline"></ion-icon>
+                        <span>Services</span>
+                    </div>
+                </a>
+
+                <!-- Hospitals -->
+                <a href="{% url 'manage_hospitals' %}"
+                    class="{% if request.resolver_match.url_name == 'manage_hospitals' %}active{% endif %}">
+                    <div class="left">
+                        <ion-icon name="medkit-outline"></ion-icon>
+                        <span>Hospitals</span>
+                    </div>
+                </a>
+
+                <!-- Contact -->
+                <a href="{% url 'manage_contacts' %}"
+                    class="{% if request.resolver_match.url_name == 'manage_contacts' %}active{% endif %}">
+                    <div class="left">
+                        <ion-icon name="call-outline"></ion-icon>
+                        <span>Contact</span>
+                    </div>
+                </a>
+
+                <!-- Profile -->
+                <a href="{% url 'profile' %}"
+                    class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                    <div class="left">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        <span>Profile</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- Logout -->
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">
+                <ion-icon name="log-out-outline"></ion-icon>
+                <span>Logout</span>
+            </button>
+        </form>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Dropdown Script -->
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById("homeDropdown");
+            const arrow = document.getElementById("dropdownArrow");
+
+            if (dropdown.style.display === "flex") {
+                dropdown.style.display = "none";
+                arrow.classList.remove("rotate");
+            } else {
+                dropdown.style.display = "flex";
+                arrow.classList.add("rotate");
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,173 @@
+{% extends 'sidebar.html' %}
+{% load static %}
+
+{% block title %}Add Home Content{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .form-container {
+        max-width: 750px;
+        margin: auto;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 18px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: 0.3s;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+    }
+
+    textarea.form-control {
+        min-height: 160px;
+        resize: vertical;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .checkbox-group input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .submit-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 14px 22px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #4f46e5;
+        transform: translateY(-2px);
+    }
+
+    .back-btn {
+        text-decoration: none;
+        background: #e5e7eb;
+        color: #111827;
+        padding: 14px 22px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        margin-left: 10px;
+        transition: 0.3s;
+    }
+
+    .back-btn:hover {
+        background: #d1d5db;
+    }
+
+    .button-group {
+        margin-top: 30px;
+    }
+
+</style>
+
+<div class="form-container">
+
+    <h1 class="page-title">Add Home Content</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <!-- Title -->
+        <div class="form-group">
+            <label class="form-label">Title</label>
+
+            <input type="text"
+                   name="title"
+                   class="form-control"
+                   placeholder="Enter title"
+                   required>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label class="form-label">Description</label>
+
+            <textarea name="description"
+                      class="form-control"
+                      placeholder="Enter description"
+                      required></textarea>
+        </div>
+
+        <!-- Status -->
+        <div class="form-group">
+            <label class="form-label">Status</label>
+
+            <div class="checkbox-group">
+                <input type="checkbox"
+                       name="status"
+                       checked>
+
+                <span>Active</span>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+
+            <button type="submit" class="submit-btn">
+                <ion-icon name="save-outline"></ion-icon>
+                Save Content
+            </button>
+
+            <a href="{% url 'manage_home_content' %}"
+               class="back-btn">
+                Back
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

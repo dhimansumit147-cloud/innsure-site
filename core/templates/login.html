@@ -1,0 +1,317 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body,html{
+    height:100%;
+    background:#f0f4f8;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* WRAPPER */
+.login-wrapper{
+    display:flex;
+    width:950px;
+    height:560px;
+    background:#fff;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,0.1);
+}
+
+/* LEFT PANEL */
+.left-panel{
+    flex:1;
+    background:#f5f6f8;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+/* LEFT CONTENT */
+.left-content{
+    text-align:center;
+    animation: fadeIn 1s ease;
+}
+
+.left-content img{
+    width:350px;
+    margin-bottom:20px;
+    animation: float 3s ease-in-out infinite;
+    height: 200px;
+}
+
+.left-content h1{
+    font-size:28px;
+    color:#0f4cdb;
+    letter-spacing:2px;
+    margin-bottom:10px;
+}
+
+.left-content h3{
+    font-size:14px;
+    color:#333;
+    margin-bottom:15px;
+}
+
+.left-content p{
+    font-size:13px;
+    color:#666;
+    max-width:260px;
+    margin:auto;
+    line-height:1.6;
+}
+
+/* RIGHT PANEL */
+.right-panel{
+    flex:1;
+    padding:50px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.right-panel h2{
+    text-align:center;
+    font-size:28px;
+    margin-bottom:30px;
+}
+
+/* INPUT */
+.input-group{
+    position:relative;
+    margin-bottom:18px;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px 45px 14px 45px;
+    border:1.5px solid #ddd;
+    border-radius:30px;
+    font-size:14px;
+    outline:none;
+}
+
+/* ICON */
+.input-group .icon{
+    position:absolute;
+    left:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#999;
+}
+
+/* SHOW HIDE */
+.show-toggle{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:12px;
+    font-weight:600;
+    color:#0f4cdb;
+    cursor:pointer;
+}
+
+/* LOGIN BUTTON */
+.btn-primary{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:30px;
+    background:#0f4cdb;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn-primary.loading{
+    background:#d3d3d3;
+    color:#666;
+    cursor:not-allowed;
+}
+
+/* SPINNER */
+.spinner{
+    display:none;
+    width:16px;
+    height:16px;
+    border:3px solid #666;
+    border-top:3px solid transparent;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin-left:10px;
+}
+
+/* FORGOT */
+.forgot-password{
+    text-align:right;
+    margin-top:10px;
+}
+
+.forgot-password a{
+    font-size:13px;
+    color:#0f4cdb;
+    text-decoration:none;
+}
+
+/* HOME */
+.home-btn{
+    display:block;
+    text-align:center;
+    margin-top:15px;
+    padding:10px;
+    background:#111827;
+    color:#fff;
+    border-radius:8px;
+    font-size:13px;
+    text-decoration:none;
+}
+
+/* ANIMATION */
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .login-wrapper{
+        flex-direction:column;
+        width:95%;
+        height:auto;
+    }
+
+    .left-panel,.right-panel{
+        padding:40px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-wrapper">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+
+        <div class="left-content">
+
+            <img src="{% static 'img/logo.png' %}" alt="logo">
+
+            <h1>WELCOME</h1>
+            <h3>INNSURE HEALTH SERVICES</h3>
+
+            <p>
+                Secure login to access healthcare dashboard, patient records and management system.
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+        <h2>Sign In</h2>
+
+        <form method="POST" onsubmit="startLoading()">
+            {% csrf_token %}
+
+            <!-- USER -->
+            <div class="input-group">
+                <span class="icon">👤</span>
+                <input type="text" name="username" placeholder="Username or Email" required>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="input-group">
+                <span class="icon">🔒</span>
+                <input type="password" id="passw" name="password" placeholder="Password" required>
+                <span class="show-toggle" onclick="togglePass()">SHOW</span>
+            </div>
+
+            <!-- FORGOT -->
+            <div class="forgot-password">
+                <a href="{% url 'forgot_password' %}">Forgot your password?</a>
+            </div>
+
+            <!-- LOGIN BUTTON -->
+            <button class="btn-primary" id="loginBtn" type="submit">
+                Login
+                <span class="spinner" id="spinner"></span>
+            </button>
+
+        </form>
+
+        <!-- HOME -->
+        <a href="{% url 'home' %}" class="home-btn">🔗 View on Home Page</a>
+
+    </div>
+
+</div>
+
+<script>
+
+/* SHOW HIDE PASSWORD */
+function togglePass(){
+    let p = document.getElementById("passw");
+    let t = document.querySelector(".show-toggle");
+
+    if(p.type === "password"){
+        p.type = "text";
+        t.innerText = "HIDE";
+    }else{
+        p.type = "password";
+        t.innerText = "SHOW";
+    }
+}
+
+/* LOADING EFFECT */
+function startLoading(){
+    let btn = document.getElementById("loginBtn");
+    let spinner = document.getElementById("spinner");
+
+    btn.classList.add("loading");
+    btn.disabled = true;
+    spinner.style.display = "inline-block";
+}
+
+</script>
+
+</body>
+</html>

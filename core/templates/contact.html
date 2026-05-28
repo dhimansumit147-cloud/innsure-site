@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+    <h1>Contact Us</h1>
+    <p>We are available 24×7 for your healthcare support</p>
+</section>
+
+<!-- ================= CONTACT WRAPPER ================= -->
+<section class="wrapper">
+
+    <!-- LEFT INFO -->
+    <div class="info-box">
+
+        <img src="{% static 'img/logo.png' %}" class="logo">
+
+        <h2>INNSURE HEALTH SERVICES</h2>
+
+        <div class="info-item">📧 innsurehealth@gmail.com</div>
+        <div class="info-item">📍 Booth No. 8, A-Block, Mankat Ranjeet Avenue, Amritsar</div>
+        <div class="info-item">📞 +91 9817281749</div>
+        <div class="info-item">📞 +91 9872179799</div>
+        <div class="info-item">📞 +91 9356110050</div>
+        <div class="info-item">🧾 GST - 03AAMFI0885R1ZQ</div>
+
+    </div>
+
+    <!-- RIGHT FORM -->
+    <div class="form-box">
+
+        <h2>Send Message</h2>
+
+        <form method="POST" action="{% url 'contact_save' %}">
+            {% csrf_token %}
+
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <input type="text" name="phone" placeholder="Phone Number" required>
+
+            <textarea name="message" placeholder="Write your message..." required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+
+    </div>
+
+    <!-- ================= MAP ================= -->
+    <div class="map-box">
+        <h2>📍 Our Location</h2>
+
+        <div class="map-frame">
+            <iframe
+                src="https://www.google.com/maps?q=31.649677,74.8582108&z=17&hl=en&output=embed"
+                allowfullscreen=""
+                loading="lazy">
+            </iframe>
+        </div>
+    </div>
+
+</section>
+
+<!-- ================= SUCCESS POPUP ================= -->
+{% if success %}
+<div class="popup">
+    <div class="popup-box">
+        <h2>🎉 Message Sent!</h2>
+        <p>We will contact you shortly.</p>
+        <button onclick="goHome()">OK</button>
+    </div>
+</div>
+{% endif %}
+
+<!-- ================= STYLES ================= -->
+<style>
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+}
+
+/* HERO */
+.hero {
+    background: linear-gradient(135deg, silver, rgba(128, 128, 128, 0.367));
+    color: black;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h1 {
+    font-size: 42px;
+}
+
+.hero p {
+    opacity: 0.9;
+    font-size: 18px;
+}
+
+/* WRAPPER */
+.wrapper {
+    display: flex;
+    gap: 30px;
+    padding: 60px 10%;
+    flex-wrap: wrap;
+}
+
+/* LEFT INFO */
+.info-box {
+    flex: 1;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.logo {
+    height: 80px;
+    margin-bottom: 15px;
+}
+
+.info-box h2 {
+    color:black;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #fff;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.info-item:hover {
+    transform: translateX(5px);
+    background:black;
+    color: white;
+}
+
+/* FORM */
+.form-box {
+    flex: 1;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.form-box h2 {
+    color: black;
+    margin-bottom: 20px;
+}
+
+.form-box input,
+.form-box textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+}
+
+.form-box input:focus,
+.form-box textarea:focus {
+    border-color: black;
+}
+
+/* BUTTON */
+.form-box button {
+    width: 100%;
+    padding: 12px;
+    background:black;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.form-box button:hover {
+   background:rgb(63, 62, 62);
+   color:white;
+}
+
+/* ================= MAP ================= */
+.map-box {
+    flex: 1 100%;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.map-box h2 {
+    color:black;
+    margin-bottom: 15px;
+}
+
+.map-frame {
+    width: 100%;
+    height: 350px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2px solid gray;
+    transition: 0.3s;
+}
+
+.map-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.map-frame:hover {
+    transform: scale(1.01);
+    border-color: black;
+    box-shadow: 0 12px 35px gray;
+}
+
+/* POPUP */
+.popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-box {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    animation: pop 0.3s ease;
+}
+
+.popup-box h2 {
+    color: #00796b;
+}
+
+.popup-box button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #00796b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ANIMATION */
+@keyframes pop {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: column;
+    }
+}
+
+</style>
+
+<!-- SCRIPT -->
+<script>
+function goHome() {
+    window.location.href = "/";
+}
+</script>
+
+{% endblock %}

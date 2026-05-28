@@ -1,0 +1,286 @@
+{% extends 'sidebar.html' %}
+{% load static %}
+
+{% block title %}Manage Home Content{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* HEADER */
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.page-title{
+    font-size:28px;
+    font-weight:700;
+    color:#111827;
+}
+
+/* ADD BUTTON */
+.add-btn{
+    background:#667eea;
+    color:#fff;
+    padding:12px 18px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:0.3s;
+}
+
+.add-btn:hover{
+    background:#4f46e5;
+    transform:translateY(-2px);
+}
+
+/* CARD */
+.content-card{
+    background:#fff;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    overflow-x:auto;
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:650px;
+}
+
+thead{
+    background:#f8fafc;
+}
+
+th{
+    text-align:left;
+    padding:14px;
+    font-size:14px;
+    color:#374151;
+    font-weight:600;
+}
+
+td{
+    padding:14px;
+    border-top:1px solid #e5e7eb;
+    font-size:14px;
+    color:#4b5563;
+    white-space:nowrap;
+}
+
+td:nth-child(3){
+    white-space:normal;
+}
+
+/* STATUS */
+.status{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.active-status{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.inactive-status{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* ACTION BUTTONS */
+.action-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+/* COMMON BUTTON STYLE */
+.action-btn{
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:0.3s;
+    white-space:nowrap;
+    cursor:pointer;
+    border:none;
+}
+
+/* EDIT BUTTON */
+.edit-btn{
+    background:#e0e7ff;
+    color:#4338ca;
+}
+
+.edit-btn:hover{
+    background:#c7d2fe;
+    transform:translateY(-2px);
+}
+
+/* DELETE BUTTON */
+.delete-btn{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.delete-btn:hover{
+    background:#fecaca;
+    transform:translateY(-2px);
+}
+
+/* EMPTY */
+.empty-data{
+    text-align:center;
+    padding:40px;
+    color:#6b7280;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:992px){
+    .page-title{
+        font-size:22px;
+    }
+}
+
+@media(max-width:768px){
+
+    .page-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .add-btn{
+        width:100%;
+        justify-content:center;
+    }
+
+    table{
+        min-width:600px;
+    }
+
+    th,td{
+        padding:10px;
+        font-size:13px;
+    }
+}
+
+@media(max-width:480px){
+
+    th,td{
+        font-size:12px;
+        padding:8px;
+    }
+
+    .action-buttons{
+        flex-direction:column;
+        width:100%;
+    }
+
+    .action-btn{
+        width:100%;
+    }
+}
+
+</style>
+
+<!-- HEADER -->
+<div class="page-header">
+
+    <h1 class="page-title">Manage Home Content</h1>
+
+    <a href="{% url 'add_home_content' %}" class="add-btn">
+        ➕ Add Content
+    </a>
+
+</div>
+
+<!-- TABLE -->
+<div class="content-card">
+
+<table>
+
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for content in home_contents %}
+    <tr>
+
+        <td>{{ forloop.counter }}</td>
+
+        <td>{{ content.title }}</td>
+
+        <td>{{ content.description|truncatechars:80 }}</td>
+
+        <td>
+            {% if content.status %}
+                <span class="status active-status">Active</span>
+            {% else %}
+                <span class="status inactive-status">Inactive</span>
+            {% endif %}
+        </td>
+
+        <!-- ACTION BUTTONS -->
+        <td>
+            <div class="action-buttons">
+
+                <!-- EDIT BUTTON -->
+                <a href="{% url 'edit_home_content' content.id %}" class="action-btn edit-btn">
+                    ✏ Edit
+                </a>
+
+                <!-- DELETE BUTTON -->
+                <a href="{% url 'delete_home_content' content.id %}"
+                   class="action-btn delete-btn"
+                   onclick="return confirm('Are you sure you want to delete this content?')">
+                    🗑 Delete
+                </a>
+
+            </div>
+        </td>
+
+    </tr>
+
+    {% empty %}
+    <tr>
+        <td colspan="5">
+            <div class="empty-data">No Home Content Found</div>
+        </td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

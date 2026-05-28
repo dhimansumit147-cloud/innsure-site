@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Hospital Directory – Amritsar</h1>
+        <p>Find the best Orthopaedic, Neurology, General & Heart care hospitals</p>
+        <a href="#directory" class="hero-btn">Explore Hospitals</a>
+    </div>
+</section>
+
+<!-- ================= HOSPITAL SECTIONS ================= -->
+<div class="container" id="directory">
+    {% for category, hospitals in hospitals_by_category.items %}
+    <div class="section-card">
+        <h2 style="border-left-color: 
+            {% if category|lower == 'general' %}#6ee7b7
+            {% elif category|lower == 'emergency' %}#f87171
+            {% elif category|lower == 'specialty' %}#fbbf24
+            {% else %}#6b7280
+            {% endif %};">
+            {{ category }} Hospitals
+        </h2>
+        <div class="grid">
+            {% for hospital in hospitals %}
+            <div class="card tilt animate-on-scroll">
+                <span class="category-tag {{ hospital.category|lower }}">
+                    {{ hospital.category }}
+                </span>
+                <h3><i class="fas fa-hospital icon" style="
+                    color: 
+                    {% if hospital.category|lower == 'general' %}#6ee7b7
+                    {% elif hospital.category|lower == 'emergency' %}#f87171
+                    {% elif hospital.category|lower == 'specialty' %}#fbbf24
+                    {% else %}#6b7280
+                    {% endif %};
+                "></i> {{ hospital.name }}</h3>
+                <p class="address"><i class="fas fa-map-marker-alt icon"></i> {{ hospital.address }}</p>
+                {% if hospital.phone %}
+                <p class="phone"><i class="fas fa-phone-alt icon"></i> <a href="tel:{{ hospital.phone }}">{{ hospital.phone }}</a></p>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="no-hospitals">No hospitals in this category.</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- ================= STYLES ================= -->
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #e5e7eb;
+        margin: 0;
+        color: #1f2937;
+    }
+    
+    /* ================= HERO ================= */
+    .hero {
+        background: linear-gradient(135deg, #9ca3af, #6b7280);
+        color: white;
+        text-align: center;
+        padding: 120px 20px;
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+    .hero-content {
+        max-width: 750px;
+        margin: auto;
+        opacity: 0;
+        transform: translateY(40px);
+        animation: fadeUp 1s forwards 0.3s;
+    }
+    .hero h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 15px; letter-spacing: 1px; }
+    .hero p { font-size: 1.1rem; margin-bottom: 25px; opacity: 0.9; }
+    .hero-btn {
+        display: inline-block;
+        padding: 12px 30px;
+        font-weight: 700;
+        background: white;
+        color: #4b5563;
+        border-radius: 50px;
+        text-decoration: none;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        transition: all 0.4s ease;
+    }
+    .hero-btn:hover { 
+        background: #374151; 
+        color: white; 
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+    }
+    
+    /* ================= SECTION CARD ================= */
+    .section-card { margin-bottom: 50px; }
+    .section-card h2 {
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+        border-left: 5px solid;
+        padding-left: 12px;
+        font-weight: 700;
+        position: relative;
+    }
+    
+    /* ================= GRID ================= */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    
+    /* ================= CARD ================= */
+    .card {
+        background: white;
+        border-radius: 20px;
+        padding: 20px 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease;
+        opacity: 0;
+        transform: translateY(30px);
+        transform-style: preserve-3d;
+        perspective: 1000px;
+    }
+    .card:hover {
+        transform: translateY(-10px) scale(1.03) rotateX(3deg) rotateY(3deg);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        background: #f9fafb;
+    }
+    
+    /* ================= CATEGORY TAG ================= */
+    .category-tag {
+    position: relative;          /* above the name */
+    display: inline-block;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 15px;
+    color: white;
+    text-transform: uppercase;
+    margin-bottom: 12px;         /* space below tag */
+    background: #6ee7b7;         /* default, override by class */
+    letter-spacing: 0.8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-10px) scale(0.8);
+    opacity: 0;
+    animation: tagDrop 0.6s forwards;
+    transition: all 0.4s ease;
+}
+
+/* Animate tag drop from above with fade */
+@keyframes tagDrop {
+    0% { opacity: 0; transform: translateY(-20px) scale(0.8); }
+    60% { opacity: 1; transform: translateY(5px) scale(1.05); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Hover effect: subtle pop + shadow */
+.card:hover .category-tag {
+    transform: scale(1.15) translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* Different colors by category */
+.category-tag.general { background: #6ee7b7; }
+.category-tag.specialty { background: #fbbf24; }
+.category-tag.emergency { background: #f87171; }
+
+/* Optional: add a glowing pulse for specialty tags (pro-level feel) */
+.category-tag.specialty {
+    animation: tagDrop 0.6s forwards, glowPulse 2.5s infinite ease-in-out 0.5s;
+}
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(251,191,36,0.5); }
+    50% { box-shadow: 0 0 18px rgba(251,191,36,0.9); }
+}
+
+/* Responsive adjustments */
+@media (max-width:768px) {
+    .category-tag { font-size: 0.7rem; padding: 5px 10px; margin-bottom: 8px; }
+}
+    .category-tag.general { background: #6ee7b7; }
+    .category-tag.specialty { background: #fbbf24; }
+    .category-tag.emergency { background: #f87171; }
+    .card:hover .category-tag { transform: scale(1.15); box-shadow: 0 6px 15px rgba(0,0,0,0.25); }
+    
+    /* ================= HOSPITAL INFO ================= */
+    .card h3 { margin: 10px 0 8px; font-size: 1.2rem; font-weight: 700; word-break: break-word; }
+    .card h3 i.icon { margin-right: 8px; transition: color 0.3s ease; }
+    .card p.address, .card p.phone { font-size: 0.85rem; color: #4b5563; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .card p.phone a { color: #374151; text-decoration: none; font-weight: 600; }
+    .card p.phone a:hover { text-decoration: underline; }
+    
+    /* ================= ANIMATION ================= */
+    .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(.5,.2,.1,1); }
+    .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    /* ================= NO HOSPITALS ================= */
+    .no-hospitals { font-style: italic; color: #6b7280; grid-column: 1/-1; text-align: center; padding: 15px; }
+    
+    /* ================= RESPONSIVE ================= */
+    @media (max-width:1024px) {
+        .hero h1 { font-size: 2.2rem; }
+        .hero p { font-size: 1rem; }
+    }
+    @media (max-width:768px) {
+        .hero h1 { font-size: 1.8rem; }
+        .hero p { font-size: 0.95rem; }
+        .hero-btn { padding: 10px 25px; font-size: 0.9rem; }
+        .section-card h2 { font-size: 1.5rem; }
+        .card { padding: 18px 15px; }
+        .card h3 { font-size: 1.1rem; }
+        .card p.address, .card p.phone { font-size: 0.8rem; }
+    }
+    @media (max-width:480px) {
+        .grid { gap: 15px; }
+        .hero { padding: 100px 15px; }
+    }
+    </style>
+
+<!-- ================= FONT AWESOME ================= -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- ================= JS FOR SCROLL & TILT ================= -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.animate-on-scroll');
+
+    // Intersection Observer for scroll animation
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    cards.forEach(card => observer.observe(card));
+
+    // Mouse move tilt effect
+    const tiltCards = document.querySelectorAll('.tilt');
+    tiltCards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width/2;
+            const cy = rect.height/2;
+            const dx = (x - cx)/cx;
+            const dy = (y - cy)/cy;
+            card.style.transform = `rotateX(${ -dy * 8 }deg) rotateY(${ dx * 8 }deg) scale(1.05)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+        });
+    });
+});
+</script>
+
+{% endblock %}

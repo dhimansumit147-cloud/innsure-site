@@ -1,0 +1,251 @@
+{% extends 'sidebar.html' %}
+
+{% block title %}Manage Hospitals{% endblock %}
+
+{% block content %}
+
+<style>
+/* ================= HEADER ================= */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    text-decoration: none;
+}
+
+.page-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+    text-decoration: none;
+}
+
+/* ================= BUTTONS ================= */
+.btn, .filter-btn, .clear-btn, .action-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Top Add button */
+.btn {
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color: white;
+}
+.btn:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59,130,246,0.3);
+}
+
+/* Filter button */
+.filter-btn {
+    background: #3b82f6;
+    color: white;
+}
+.filter-btn:hover {
+    background: #2563eb;
+}
+
+/* Clear button */
+.clear-btn {
+    background: #f97316;
+    color: white;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+.clear-btn:hover {
+    background: #c2410c;
+}
+
+/* ================= SEARCH BAR ================= */
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.search-bar input, .search-bar select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.search-bar input:focus, .search-bar select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+/* ================= TABLE CARD ================= */
+.table-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f9fafb;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+    color: #374151;
+}
+
+tr {
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+    background: #f3f4f6;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.actions {
+    display: flex;
+    gap: 6px; /* Space between Edit/Delete */
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1; /* optional to keep buttons equal width */
+    text-align: center;
+}
+
+.edit-btn {
+    background: #10b981;
+    text-decoration: none;
+}
+.edit-btn:hover {
+    background: #059669;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(16,185,129,0.3);
+}
+
+.delete-btn {
+    background: #ef4444;
+    text-decoration: none;
+}
+.delete-btn:hover {
+    background: #b91c1c;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(239,68,68,0.3);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr { display: block; width: 100%; }
+    th { display: none; }
+    td {
+        padding: 10px;
+        border: none;
+        position: relative;
+    }
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 5px;
+        color: #6b7280;
+    }
+    .search-bar input, .search-bar select, .search-bar .filter-btn, .search-bar .clear-btn {
+        width: 100%;
+    }
+    .actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+</style>
+
+<div>
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <h2>Manage Hospitals</h2>
+        <a href="{% url 'add_hospital' %}" class="btn" style="text-decoration: none;">+ Add Hospital</a>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <form method="GET" class="search-bar">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search by hospital name...">
+        <select name="category">
+            <option value="">All Categories</option>
+            <option value="General" {% if request.GET.category == 'General' %}selected{% endif %}>General</option>
+            <option value="Specialty" {% if request.GET.category == 'Specialty' %}selected{% endif %}>Specialty</option>
+            <option value="Emergency" {% if request.GET.category == 'Emergency' %}selected{% endif %}>Emergency</option>
+        </select>
+        <button type="submit" class="filter-btn">Filter</button>
+
+        {% if request.GET.q or request.GET.category %}
+        <a href="{% url 'manage_hospitals' %}" class="clear-btn">Clear</a>
+        {% endif %}
+    </form>
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for hospital in hospitals %}
+                <tr>
+                    <td data-label="Category">{{ hospital.category }}</td>
+                    <td data-label="Name"><strong>{{ hospital.name }}</strong></td>
+                    <td data-label="Address">{{ hospital.address }}</td>
+                    <td data-label="Actions">
+                        <div class="actions">
+                            <a href="{% url 'edit_hospital' hospital.id %}" class="action-btn edit-btn">Edit</a>
+                            <a href="{% url 'delete_hospital' hospital.id %}" onclick="return confirm('Are you sure?')" class="action-btn delete-btn">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align:center; padding:20px;">
+                        No hospitals found
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

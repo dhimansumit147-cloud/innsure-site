@@ -1,0 +1,226 @@
+{% extends 'sidebar.html' %}
+
+{% block title %}Manage Slider{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* ================= HEADER ================= */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.page-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* ================= BUTTON ================= */
+.btn {
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59,130,246,0.3);
+}
+
+/* ================= TABLE CARD ================= */
+.table-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f9fafb;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+    color: #374151;
+}
+
+tr {
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+    background: #f3f4f6;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* FIX 🔥 underline removed here */
+.actions a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+/* EDIT BUTTON */
+.edit-btn {
+    background: #10b981;
+}
+
+.edit-btn:hover {
+    background: #059669;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(16,185,129,0.3);
+}
+
+/* DELETE BUTTON */
+.delete-btn {
+    background: #ef4444;
+}
+
+.delete-btn:hover {
+    background: #b91c1c;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(239,68,68,0.3);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+
+    table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+    }
+
+    th {
+        display: none;
+    }
+
+    td {
+        padding: 10px;
+        border: none;
+        position: relative;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 5px;
+        color: #6b7280;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+</style>
+
+<div>
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <h2>Manage Slider</h2>
+        <a href="{% url 'add_slider' %}" class="btn">+ Add New Slide</a>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for slide in slides %}
+                <tr>
+
+                    <td data-label="Title">{{ slide.title }}</td>
+
+                    <td data-label="Description">
+                        {{ slide.description|default:"-" }}
+                    </td>
+
+                    <td data-label="Image">
+                        <img src="{{ slide.image.url }}" alt="{{ slide.title }}" style="width:120px; border-radius:8px;">
+                    </td>
+
+                    <td data-label="Status">{{ slide.status }}</td>
+
+                    <td data-label="Actions">
+                        <div class="actions">
+
+                            <a href="{% url 'edit_slider' slide.id %}" class="action-btn edit-btn">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'delete_slider' slide.id %}" class="action-btn delete-btn"
+                               onclick="return confirm('Are you sure?')">
+                                Delete
+                            </a>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align:center; padding:20px;">
+                        No slides found
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* BODY */
+body{
+    background: radial-gradient(circle at top, #f1f5f9, #e2e8f0);
+    font-family: system-ui;
+    overflow-x: hidden;
+}
+
+/* HERO */
+.hero-section{
+    height:260px;
+    background: linear-gradient(135deg,#7d828d,#6f7a97,#91bed3);
+    background-size: 200% 200%;
+    animation: bgFlow 8s ease infinite;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:black;
+
+    position:relative;
+    overflow:hidden;
+}
+
+.hero-section::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent);
+    animation: pulseGlow 6s ease-in-out infinite;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+}
+
+.hero-content h1{
+    font-size:44px;
+    margin-bottom:8px;
+    letter-spacing:1px;
+    animation: fadeDown 1s ease forwards;
+}
+
+.hero-content p{
+    font-size:15px;
+    color:black;
+    animation: fadeUp 1.2s ease forwards;
+}
+
+/* CONTAINER */
+.services-container{
+    max-width:1150px;
+    margin:auto;
+    padding:70px 18px;
+}
+
+/* SECTION */
+.service-section{
+    margin-bottom:70px;
+
+    opacity:0;
+    transform: translateY(60px) scale(0.98);
+
+    transition: all 0.8s cubic-bezier(.2,.8,.2,1);
+}
+
+/* SECTION TITLE */
+.section-title h2{
+    font-size:26px;
+    font-weight:700;
+    margin-bottom:6px;
+    letter-spacing:0.5px;
+    transition:0.3s ease;
+}
+
+/* COLORS */
+.service-section:nth-child(1) h2{ color:#2563eb; }
+.service-section:nth-child(2) h2{ color:#06b6d4; }
+.service-section:nth-child(3) h2{ color:#10b981; }
+.service-section:nth-child(4) h2{ color:#f59e0b; }
+.service-section:nth-child(5) h2{ color:#ef4444; }
+
+.title-line{
+    width:90px;
+    height:3px;
+    border-radius:10px;
+    background:currentColor;
+    opacity:0.7;
+    transition:0.4s ease;
+}
+
+.service-section:hover .title-line{
+    width:140px;
+    opacity:1;
+}
+
+/* GRID */
+.service-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:24px;
+    margin-top:28px;
+}
+
+/* CARD */
+.service-card{
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(14px);
+
+    border-radius:20px;
+    padding:24px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+    opacity:0;
+    transform: translateY(40px);
+
+    transition: all 0.35s ease;
+
+    position:relative;
+    overflow:hidden;
+
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* glow border */
+.service-card::before{
+    content:'';
+    position:absolute;
+    inset:-2px;
+    background: linear-gradient(135deg,#3b82f6,#06b6d4,#10b981);
+    opacity:0;
+    transition:0.4s ease;
+}
+
+.service-card:hover::before{
+    opacity:0.15;
+}
+
+/* ICON */
+.service-icon{
+    width:58px;
+    height:58px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:16px;
+
+    background: linear-gradient(135deg,#3b82f6,#06b6d4);
+    color:#fff;
+    font-size:22px;
+
+    margin-bottom:15px;
+
+    transition:0.4s ease;
+}
+
+.service-card:hover .service-icon{
+    transform: rotate(-10deg) scale(1.15);
+}
+
+/* TEXT */
+.service-card h3{
+    font-size:18px;
+    margin-bottom:6px;
+    color:#0f172a;
+}
+
+.service-card p{
+    font-size:13.5px;
+    color:#64748b;
+    line-height:1.6;
+}
+
+/* ANIMATIONS */
+@keyframes fadeDown{
+    from{opacity:0; transform:translateY(-20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes fadeUp{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes bgFlow{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+@keyframes pulseGlow{
+    0%,100%{opacity:0.4;}
+    50%{opacity:0.8;}
+}
+
+</style>
+
+
+<!-- HERO -->
+<div class="hero-section">
+    <div class="hero-content">
+        <h1>Our Services</h1>
+        <p>Comprehensive healthcare & community support services</p>
+    </div>
+</div>
+
+
+<div class="services-container">
+
+    {% for heading, items in grouped_services.items %}
+
+    <div class="service-section">
+
+        <div class="section-title">
+            <h2>{{ heading }}</h2>
+            <div class="title-line"></div>
+        </div>
+
+        <div class="service-grid">
+
+            {% for service in items %}
+
+            <div class="service-card">
+
+                <div class="service-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+
+                <h3>{{ service.name }}</h3>
+                <p>{{ service.description }}</p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+<!-- JS -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // SCROLL REVEAL
+    const sections = document.querySelectorAll(".service-section");
+    const cards = document.querySelectorAll(".service-card");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0) scale(1)";
+            }
+        });
+    }, { threshold: 0.15 });
+
+    sections.forEach(sec => observer.observe(sec));
+    cards.forEach(card => observer.observe(card));
+
+    // 3D TILT
+    cards.forEach(card => {
+
+        card.addEventListener("mousemove", (e) => {
+            const rect = card.getBoundingClientRect();
+
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = ((y - centerY) / centerY) * -8;
+            const rotateY = ((x - centerX) / centerX) * 8;
+
+            card.style.transform =
+                `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.03)`;
+        });
+
+        card.addEventListener("mouseleave", () => {
+            card.style.transform =
+                "perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)";
+        });
+
+    });
+
+});
+</script>
+
+{% endblock %}

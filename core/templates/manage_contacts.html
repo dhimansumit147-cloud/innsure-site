@@ -1,0 +1,400 @@
+{% extends 'sidebar.html' %}
+
+{% block title %}Manage Contacts{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>Manage Contacts</h2>
+</div>
+
+<!-- 🔍 SEARCH -->
+<form method="GET" class="search-box">
+    <input type="text"
+           name="search"
+           placeholder="Search name, email, phone..."
+           value="{{ search|default:'' }}">
+
+    <button type="submit">Search</button>
+
+    <a href="{% url 'manage_contacts' %}" class="reset-btn">Reset</a>
+</form>
+
+<div class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Message</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for contact in contacts %}
+            <tr>
+                <td><strong>{{ contact.name }}</strong></td>
+                <td>{{ contact.email }}</td>
+                <td>{{ contact.phone }}</td>
+                <td>{{ contact.message|truncatechars:50 }}</td>
+
+                <td>
+                    <button class="view-btn" onclick="openModal('{{ contact.id }}')">
+                        👁 View
+                    </button>
+
+                    <a class="delete-btn"
+                       href="{% url 'delete_contact' contact.id %}"
+                       onclick="return confirm('Are you sure?')">
+                        🗑 Delete
+                    </a>
+                </td>
+            </tr>
+
+            <!-- 🔥 MODAL -->
+            <div id="modal-{{ contact.id }}" class="modal">
+                <div class="modal-content">
+
+                    <span class="close" onclick="closeModal('{{ contact.id }}')">&times;</span>
+
+                    <div class="modal-header">
+                        <h3>Contact Details</h3>
+                    </div>
+
+                    <div class="modal-body">
+                        <p><strong>Name:</strong> {{ contact.name }}</p>
+                        <p><strong>Email:</strong> {{ contact.email }}</p>
+                        <p><strong>Phone:</strong> {{ contact.phone }}</p>
+
+                        <p><strong>Message:</strong></p>
+                        <div class="message-box">
+                            {{ contact.message }}
+                        </div>
+
+                        <p><strong>Submitted:</strong> {{ contact.created_at|date:"d M Y, H:i" }}</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="close-btn" onclick="closeModal('{{ contact.id }}')">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        {% empty %}
+            <tr>
+                <td colspan="5" style="text-align:center;padding:20px;">
+                    No contacts found
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 📄 PAGINATION -->
+    <div class="pagination">
+
+        {% if contacts.has_previous %}
+            <a href="?page={{ contacts.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                Prev
+            </a>
+        {% endif %}
+
+        <span>
+            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+        </span>
+
+        {% if contacts.has_next %}
+            <a href="?page={{ contacts.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                Next
+            </a>
+        {% endif %}
+
+    </div>
+</div>
+
+<style>
+
+    /* HEADER */
+    .page-header {
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+    
+    .page-header h2 {
+        font-size:26px;
+        font-weight:700;
+        color:#111827;
+    }
+    
+    /* SEARCH */
+    .search-box{
+        display:flex;
+        gap:10px;
+        margin-bottom:15px;
+        flex-wrap:wrap;
+    }
+    
+    .search-box input{
+        padding:10px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        width:280px;
+        flex:1;
+        min-width:200px;
+    }
+    
+    .search-box button{
+        padding:10px 14px;
+        border:none;
+        background:#3b82f6;
+        color:#fff;
+        border-radius:10px;
+        cursor:pointer;
+    }
+    
+    .reset-btn{
+        padding:10px 14px;
+        background:#ef4444;
+        color:#fff;
+        border-radius:10px;
+        text-decoration:none;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+    }
+    
+    /* TABLE */
+    .table-card {
+        background:#fff;
+        padding:20px;
+        border-radius:16px;
+        box-shadow:0 6px 20px rgba(0,0,0,0.05);
+        overflow-x:auto; /* important */
+    }
+    
+    table {
+        width:100%;
+        border-collapse:collapse;
+        min-width:650px;
+    }
+    
+    thead {
+        background:#f9fafb;
+    }
+    
+    th, td {
+        padding:14px;
+        text-align:left;
+        font-size:14px;
+        color:#374151;
+        vertical-align:top;
+    }
+    
+    tr {
+        border-bottom:1px solid #eee;
+    }
+    
+    tr:hover {
+        background:#f3f4f6;
+    }
+    
+    /* BUTTONS */
+    .view-btn {
+        background:#3b82f6;
+        color:#fff;
+        padding:6px 12px;
+        border-radius:8px;
+        border:none;
+        cursor:pointer;
+        font-size:13px;
+    }
+    
+    .delete-btn{
+        background: linear-gradient(135deg,#ef4444,#dc2626);
+        color:#fff;
+        padding:6px 12px;
+        border-radius:8px;
+        font-size:13px;
+        text-decoration:none;
+        margin-left:6px;
+    }
+    
+    /* PAGINATION */
+    .pagination{
+        margin-top:15px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:10px;
+        flex-wrap:wrap;
+    }
+    
+    .pagination a{
+        padding:6px 12px;
+        background:#3b82f6;
+        color:#fff;
+        border-radius:6px;
+        text-decoration:none;
+    }
+    
+    /* MODAL */
+    .modal {
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.55);
+        backdrop-filter:blur(6px);
+        z-index:9999;
+        justify-content:center;
+        align-items:center;
+        padding:15px;
+    }
+    
+    .modal.show {
+        display:flex;
+    }
+    
+    .modal-content {
+        background:#fff;
+        width:100%;
+        max-width:520px;
+        border-radius:16px;
+        padding:20px;
+        position:relative;
+        box-shadow:0 20px 50px rgba(0,0,0,0.2);
+        animation:pop 0.25s ease;
+    }
+    
+    @keyframes pop {
+        from {transform:scale(0.9); opacity:0;}
+        to {transform:scale(1); opacity:1;}
+    }
+    
+    .close {
+        position:absolute;
+        top:12px;
+        right:15px;
+        font-size:22px;
+        cursor:pointer;
+        color:#6b7280;
+    }
+    
+    .modal-header h3 {
+        font-size:18px;
+        font-weight:700;
+        margin-bottom:15px;
+        color:#111827;
+    }
+    
+    .modal-body p {
+        font-size:14px;
+        margin-bottom:8px;
+    }
+    
+    .message-box {
+        background:#f9fafb;
+        padding:12px;
+        border-radius:10px;
+        border:1px solid #eee;
+    }
+    
+    .modal-footer {
+        margin-top:20px;
+        text-align:right;
+    }
+    
+    .close-btn {
+        background:#111827;
+        color:#fff;
+        border:none;
+        padding:10px 14px;
+        border-radius:10px;
+        cursor:pointer;
+    }
+    
+    /* =========================
+       📱 RESPONSIVE DESIGN
+    ========================= */
+    @media (max-width: 768px) {
+    
+        .page-header h2 {
+            font-size:22px;
+        }
+    
+        .search-box {
+            flex-direction:column;
+        }
+    
+        .search-box input,
+        .search-box button,
+        .reset-btn {
+            width:100%;
+        }
+    
+        table {
+            min-width:600px;
+        }
+    
+        th, td {
+            font-size:13px;
+            padding:10px;
+        }
+    
+        .view-btn,
+        .delete-btn {
+            width:100%;
+            display:block;
+            margin:5px 0;
+            text-align:center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+    
+        .page-header h2 {
+            font-size:18px;
+        }
+    
+        th, td {
+            font-size:12px;
+        }
+    
+        .modal-content {
+            padding:15px;
+        }
+    
+        .modal-header h3 {
+            font-size:16px;
+        }
+    }
+    
+    </style>
+
+<script>
+function openModal(id) {
+    document.getElementById('modal-' + id).classList.add('show');
+}
+
+function closeModal(id) {
+    document.getElementById('modal-' + id).classList.remove('show');
+}
+
+window.onclick = function(event) {
+    document.querySelectorAll('.modal').forEach(modal => {
+        if (event.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+}
+</script>
+
+{% endblock %}

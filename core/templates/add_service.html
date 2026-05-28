@@ -1,0 +1,108 @@
+{% extends 'sidebar.html' %}
+
+{% block title %}Add Service{% endblock %}
+
+{% block content %}
+
+<style>
+.form-container {
+    max-width: 600px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+/* HEADER */
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* INPUT GROUP */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #374151;
+    font-weight: 500;
+}
+
+/* INPUT STYLE */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+    background: #f9fafb;
+}
+
+input:focus, textarea:focus {
+    border-color: #3b82f6;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(59,130,246,0.25);
+}
+</style>
+
+<div class="form-container">
+
+    <h2>➕ Add New Service</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Heading -->
+        <div class="form-group">
+            <label>Heading</label>
+            <input type="text" name="heading" placeholder="Enter service heading" required>
+        </div>
+
+        <!-- Name -->
+        <div class="form-group">
+            <label>Service Name</label>
+            <input type="text" name="name" placeholder="Enter service name" required>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="4" placeholder="Enter service description" required></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit">+ Add Service</button>
+
+    </form>
+
+</div>
+
+{% endblock %}

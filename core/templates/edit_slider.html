@@ -1,0 +1,152 @@
+{% extends 'sidebar.html' %}
+
+{% block title %}Edit Slider{% endblock %}
+
+{% block content %}
+
+<style>
+/* ================= CARD ================= */
+.card-form {
+    max-width: 650px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 35px 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-form:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+}
+
+/* ================= HEAD ================= */
+.card-form h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* ================= FORM GROUP ================= */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #374151;
+}
+.form-group input[type="text"],
+.form-group select,
+.form-group input[type="file"],
+.form-group textarea {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group input[type="file"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+/* ================= TEXTAREA ================= */
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+    font-family: inherit;
+}
+
+/* ================= IMAGE PREVIEW ================= */
+#imagePreview {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    margin-top: 12px;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* ================= BUTTON ================= */
+.btn-pro {
+    display: block;
+    width: 100%;
+    padding: 14px 0;
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn-pro:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(59,130,246,0.25);
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .card-form { padding: 25px 20px; }
+    .card-form h2 { font-size: 24px; }
+}
+</style>
+
+<div class="card-form">
+    <h2>Edit Slider</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Title -->
+        <div class="form-group">
+            <label for="title">Slide Title</label>
+            <input type="text" id="title" name="title" value="{{ slide.title }}" required>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label for="description">Slide Description</label>
+            <textarea id="description" name="description" placeholder="Enter slide description">{{ slide.description }}</textarea>
+        </div>
+
+        <!-- Image -->
+        <div class="form-group">
+            <label for="image">Slide Image</label>
+            <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+            <img id="imagePreview" src="{{ slide.image.url }}">
+        </div>
+
+        <!-- Status -->
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="Active" {% if slide.status == "Active" %}selected{% endif %}>Active</option>
+                <option value="Inactive" {% if slide.status == "Inactive" %}selected{% endif %}>Inactive</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-pro">✓ Save Changes</button>
+    </form>
+</div>
+
+<script>
+function previewImage(event){
+    const output = document.getElementById('imagePreview');
+    output.src = URL.createObjectURL(event.target.files[0]);
+}
+</script>
+
+{% endblock %}

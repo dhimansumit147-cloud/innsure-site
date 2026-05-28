@@ -1,0 +1,217 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="header">
+        <h2>Manage About Content</h2>
+        <a href="{% url 'add_about' %}" class="btn">+ Add Content</a>
+    </div>
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for about in abouts %}
+            <tr>
+
+                <td>{{ about.title }}</td>
+
+                <td>{{ about.description|truncatewords:20 }}</td>
+
+                <td>
+                    {% if about.status == "Active" %}
+                        <span class="active">Active</span>
+                    {% else %}
+                        <span class="inactive">Inactive</span>
+                    {% endif %}
+                </td>
+
+                <!-- ACTION BUTTONS -->
+                <td>
+                    <div class="action-buttons">
+
+                        <!-- EDIT BUTTON -->
+                        <a href="{% url 'edit_about' about.id %}" class="action-btn edit-btn">
+                            ✏ Edit
+                        </a>
+
+                        <!-- DELETE BUTTON -->
+                        <a href="{% url 'delete_about' about.id %}"
+                           class="action-btn delete-btn"
+                           onclick="return confirm('Are you sure you want to delete this content?')">
+                            🗑 Delete
+                        </a>
+
+                    </div>
+                </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty">No About Content Found</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<style>
+
+/* CONTAINER */
+.container{
+    padding:30px;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.header h2{
+    font-size:24px;
+    font-weight:700;
+}
+
+/* ADD BUTTON */
+.btn{
+    background:#111;
+    color:#fff;
+    padding:10px 18px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+}
+
+/* TABLE */
+.table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.table th,
+.table td{
+    padding:14px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    font-size:14px;
+}
+
+/* STATUS */
+.active{
+    color:green;
+    font-weight:600;
+}
+
+.inactive{
+    color:red;
+    font-weight:600;
+}
+
+/* ACTION BUTTONS */
+.action-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+/* COMMON BUTTON STYLE */
+.action-btn{
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:0.3s;
+    cursor:pointer;
+}
+
+/* EDIT BUTTON */
+.edit-btn{
+    background:#e0e7ff;
+    color:#4338ca;
+}
+
+.edit-btn:hover{
+    background:#c7d2fe;
+    transform:translateY(-2px);
+}
+
+/* DELETE BUTTON */
+.delete-btn{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.delete-btn:hover{
+    background:#fecaca;
+    transform:translateY(-2px);
+}
+
+/* EMPTY */
+.empty{
+    text-align:center;
+    padding:20px;
+    color:#666;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .btn{
+        width:100%;
+        text-align:center;
+    }
+}
+
+@media(max-width:480px){
+
+    .table th,
+    .table td{
+        font-size:12px;
+        padding:10px;
+    }
+
+    .action-buttons{
+        flex-direction:column;
+    }
+
+    .action-btn{
+        width:100%;
+    }
+}
+
+</style>
+
+{% endblock %}
