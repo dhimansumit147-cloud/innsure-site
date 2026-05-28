@@ -29,7 +29,11 @@ SECRET_KEY = 'django-insecure-$pxu7ebq)qwkkjen@+svajv!m!nl^m%tm&6-lp$xsg+dv^lawf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'innsurehealth.in',
+    'www.innsurehealth.in',
+    '.onrender.com'
+]
 
 
 # Application definition
